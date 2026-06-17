@@ -2,8 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { contactFormSchema, type ContactFormData } from "@/lib/contact";
 
-const CONTACT_EMAIL =
-  import.meta.env.VITE_CONTACT_EMAIL ?? "your-email@example.com";
+const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL ?? "";
 
 function buildMailtoUrl(data: ContactFormData): string {
   const subject = encodeURIComponent(`[Portfolio] ${data.subject}`);
@@ -28,12 +27,6 @@ export function useCreateContactMessage() {
   return useMutation({
     mutationFn: async (data: ContactFormData) => {
       const validated = contactFormSchema.parse(data);
-      if (CONTACT_EMAIL === "your-email@example.com") {
-        throw new Error(
-          "Set VITE_CONTACT_EMAIL to your email so the contact form can open the correct recipient.",
-        );
-      }
-
       const mailtoUrl = buildMailtoUrl(validated);
       window.location.href = mailtoUrl;
 
@@ -42,7 +35,9 @@ export function useCreateContactMessage() {
     onSuccess: () => {
       toast({
         title: "Email Draft Opened",
-        description: "Your mail app should open with a prefilled draft.",
+        description: CONTACT_EMAIL
+          ? "Your mail app should open with a prefilled draft."
+          : "Add your email as VITE_CONTACT_EMAIL to prefill the recipient too.",
         className: "bg-[#111111] border-primary/30 text-primary",
       });
     },

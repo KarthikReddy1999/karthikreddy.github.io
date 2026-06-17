@@ -6,12 +6,14 @@ export default {
   theme: {
     extend: {
       borderRadius: {
-        lg: ".5625rem", /* 9px */
-        md: ".375rem", /* 6px */
-        sm: ".1875rem", /* 3px */
+        lg: ".5625rem",
+        md: ".375rem",
+        sm: ".1875rem",
+        xl: "1rem",
+        "2xl": "1.25rem",
+        "3xl": "1.5rem",
       },
       colors: {
-        // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
         border: "hsl(var(--border) / <alpha-value>)",
@@ -52,6 +54,11 @@ export default {
           border: "var(--destructive-border)",
         },
         ring: "hsl(var(--ring) / <alpha-value>)",
+        glow: {
+          orange: "#FF6B35",
+          red: "#FF3D00",
+          amber: "#FFB347",
+        },
         chart: {
           "1": "hsl(var(--chart-1) / <alpha-value>)",
           "2": "hsl(var(--chart-2) / <alpha-value>)",
@@ -84,6 +91,7 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
+        display: ["var(--font-display)"],
         serif: ["var(--font-serif)"],
         mono: ["var(--font-mono)"],
       },
@@ -96,10 +104,25 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        ticker: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        pulseGlow: {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.8" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        ticker: "ticker 30s linear infinite",
+        "pulse-glow": "pulseGlow 4s ease-in-out infinite",
+        float: "float 6s ease-in-out infinite",
       },
     },
   },

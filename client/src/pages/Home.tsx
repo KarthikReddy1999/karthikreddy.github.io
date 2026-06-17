@@ -1,6 +1,7 @@
 import Cursor from "@/components/Cursor";
 import NoiseBackground from "@/components/NoiseBackground";
 import Navbar from "@/components/Navbar";
+import SideNav from "@/components/SideNav";
 import Hero from "@/components/sections/Hero";
 import Stats from "@/components/sections/Stats";
 import About from "@/components/sections/About";
@@ -14,14 +15,14 @@ export default function Home() {
       <NoiseBackground />
       <Cursor />
       <Navbar />
-      
+      <SideNav />
+
       <Hero />
       <Stats />
       <About />
       <Projects />
       <Experience />
       <Contact />
-      
     </main>
   );
 }

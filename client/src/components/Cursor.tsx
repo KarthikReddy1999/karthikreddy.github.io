@@ -3,17 +3,19 @@ import { motion, useSpring } from "framer-motion";
 
 export default function Cursor() {
   const [isHovering, setIsHovering] = useState(false);
-  
+  const [isVisible, setIsVisible] = useState(false);
+
   const cursorX = useSpring(-100, { stiffness: 500, damping: 28 });
   const cursorY = useSpring(-100, { stiffness: 500, damping: 28 });
 
   useEffect(() => {
-    // Only show custom cursor on non-touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
+      if (!isVisible) setIsVisible(true);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
@@ -38,32 +40,54 @@ export default function Cursor() {
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", handleMouseOver);
     };
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, isVisible]);
 
-  // Hide cursor completely on touch devices
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
-    return null;
+  if (typeof window !== "undefined") {
+    if (window.matchMedia("(pointer: coarse)").matches) return null;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
   }
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-[100] mix-blend-difference flex items-center justify-center"
-      style={{
-        x: cursorX,
-        y: cursorY,
-        translateX: "-50%",
-        translateY: "-50%",
-      }}
-      animate={{
-        scale: isHovering ? 2.5 : 1,
-        backgroundColor: isHovering ? "hsl(var(--primary))" : "hsl(var(--foreground))",
-      }}
-      transition={{ duration: 0.15, ease: "easeOut" }}
-    >
-      <motion.div 
-        className="w-1 h-1 bg-background rounded-full"
-        animate={{ opacity: isHovering ? 1 : 0 }}
+    <>
+      {/* Outer ring */}
+      <motion.div
+        className="fixed top-0 left-0 rounded-full pointer-events-none z-[100] border"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        animate={{
+          width: isHovering ? 48 : 32,
+          height: isHovering ? 48 : 32,
+          borderColor: isHovering
+            ? "rgba(255, 107, 53, 0.6)"
+            : "rgba(255, 255, 255, 0.15)",
+          backgroundColor: isHovering
+            ? "rgba(255, 107, 53, 0.08)"
+            : "rgba(255, 255, 255, 0.02)",
+          boxShadow: isHovering
+            ? "0 0 20px rgba(255, 107, 53, 0.3)"
+            : "0 0 0px transparent",
+        }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
       />
-    </motion.div>
+      {/* Inner dot */}
+      <motion.div
+        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-[101]"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        animate={{
+          backgroundColor: isHovering ? "#FF6B35" : "#F5F5F5",
+          scale: isHovering ? 1.5 : 1,
+        }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
+      />
+    </>
   );
 }
